@@ -17,7 +17,7 @@ contract BiddingAgency {
     }
     
     function placeBid(uint bidValue){
-	if(paidUsers[msg.sender] == 2){
+	if(paidUsers[msg.sender] == bidPrice){
 	    /*if the bid value already exists*/
 	    if(bidsToUsersMapping[bidValue] != 0)
 	    {
@@ -39,7 +39,7 @@ contract BiddingAgency {
     
     function () {
 	/*Accumulate the payment in paidUsers*/
-	paidUsers[msg.sender] = msg.value;
+	paidUsers[msg.sender] = paidUsers[msg.sender] + msg.value;
 	
 	MessageEvent("Funds sent", msg.value);	
     }

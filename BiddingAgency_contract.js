@@ -1,8 +1,9 @@
 var agencyContract = web3.eth.contract(agencyCompiled.BiddingAgency.info.abiDefinition);
 var agencyContract_MessageEvent;
+var bidPrice = web3.toWei(2, "ether");
 
 var biddingAgency = agencyContract.new(
-    2,
+    bidPrice,
     {
 	from:web3.eth.accounts[0],
 	data:agencyCompiled.BiddingAgency.code,
