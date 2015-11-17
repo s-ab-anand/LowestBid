@@ -8,53 +8,58 @@ contract BiddingAgency {
     mapping (address => uint) paidUsers;
     
     event MessageEvent(string msg, uint value);
+
+    string public greeting = "Welcome to Lowest Bidding Game. Call bidPrice to view price for each bid and Call placeBid after you purchase bidding capabiility by sending funds";
+    
     uint public bidPrice;
     
     address public owner;
-
-    struct Bidders {
-	address[] bidderAddress;	
-    }
-
-    function BiddingAgency(uint _bidPrice){
+    uint public timeEnd;
+    
+    function BiddingAgency(uint _bidPrice, uint _duration){
 	bidPrice = _bidPrice;
 	owner = msg.sender;
+
+	timeEnd = now + _duration * 1 minutes;
     }
 
 
     /*This function allows the user to bet by sending his lowest bid guess. He can place as many bids as he wishes until his balance is finished*/
     function placeBid(uint bidValue){
-	
-	/*Check if the user has paid us enough to place a bid*/
-	if(paidUsers[msg.sender] >= bidPrice){
 
-	    /*Decrease the user's balance by the price of one bid*/
-	    paidUsers[msg.sender] = paidUsers[msg.sender] - bidPrice;
-	    
-	    /*if the bid has already been placed by someone else*/
-	    if(bidsToUsersMapping[bidValue] != 0)
-	    {
-		address existingBidder = bidsToUsersMapping[bidValue];
+	/*Bids can only be placed if they are before the deadline*/
+	if(now < timeEnd)
+	{
+	    /*Check if the user has paid us enough to place a bid*/
+	    if(paidUsers[msg.sender] >= bidPrice){
 
-		MessageEvent("Bid exists", bidValue);
+		/*Decrease the users balance by the price of one bid*/
+		paidUsers[msg.sender] = paidUsers[msg.sender] - bidPrice;
 		
-		/*notify the current bidder as well as the existing bidder that the bid is now void*/
+		/*if the bid has already been placed by someone else*/
+		if(bidsToUsersMapping[bidValue] != 0)
+		{
+		    address existingBidder = bidsToUsersMapping[bidValue];
 
-		/*Implement this function*/
-		/*notifyConflict(bidValue, msg.sender, existingBidder);*/
+		    MessageEvent("Bid exists", bidValue);
+		    
+		    /*notify the current bidder as well as the existing bidder that the bid is now void*/
 
-		/*Reset the mapping to 0*/
-		bidsToUsersMapping[bidValue] = 0;		
+		    /*Implement this function*/
+		    /*notifyConflict(bidValue, msg.sender, existingBidder);*/
+
+		    /*Reset the mapping to 0*/
+		    bidsToUsersMapping[bidValue] = 0;		
+		}else{
+		    /*Update the bidValue to bidder mapping Now bidValue belongs to msg.sender*/
+		    
+		    bidsToUsersMapping[bidValue] = msg.sender;		
+		    MessageEvent("Bid added", bidValue);
+		}
+		
 	    }else{
-		/*Update the bidValue to bidder mapping
-		  Now bidValue belongs to msg.sender*/
-		
-		bidsToUsersMapping[bidValue] = msg.sender;		
-		MessageEvent("Bid added", bidValue);
+		MessageEvent("Insufficient funds. Please send more ethers and try again", 0);
 	    }
-		
-	}else{
-	    MessageEvent("Insufficient funds. Please send more ethers and try again", -1);
 	}
     }
 
