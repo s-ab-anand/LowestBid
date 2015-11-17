@@ -35,6 +35,10 @@ contract Bid {
 
 	return true;
     }
+
+    function getEther(){
+	
+    }
     
     function claimMiningReward() {
 	if (miningReward[block.number] == 0) {
