@@ -1,2 +1,2 @@
-loadScript("/home/sujank/ethscripts/LowestBid/BiddingAgency.js_t.js")
-loadScript("/home/sujank/ethscripts/LowestBid/BiddingAgency_contract.js")
+loadScript("/Users/Anandab/LowestBid_Anand/BiddingAgency.js_t.js")
+loadScript("/Users/Anandab/LowestBid_Anand/BiddingAgency_contract.js")
